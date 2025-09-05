@@ -221,7 +221,7 @@ const validateForm = () => {
   if (!validateEdad(edad)) setInvalidInput("Edad","Edad debe ser al menos 1");
   if (!validateFechaEntrega(fecha)) setInvalidInput("Fecha de Entrega", "Debe ser igual o posterior a hoy");
   if (!validateContactoId(contacto, contactoId)) setInvalidInput("El ID o URL", "El contacto debe tener entre 4 y 50 caracteres");
-  if (!validateRegion(Foto)) setInvalidInput("Foto", "Debes agregar un minimo de 1 foto");
+  if (!validateFiles(Foto)) setInvalidInput("Foto", "Debes agregar un minimo de 1 foto");
 
   
 
