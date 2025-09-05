@@ -27,7 +27,7 @@ if(regionSelect && comunaSelect){
 
 function mostrarInputContacto(){
     const contacto = document.getElementById("contactarPor");
-    const input = documen.getElementById("contactoId");
+    const input = document.getElementById("contactoId");
     if(contacto.value){
         input.style.display = "block";
     }else{
@@ -50,94 +50,9 @@ function agregarFoto(){
     }
 }
 
-function validarFormulario(){
-    let region = document.getElementById("region").value;
-    if(!region){
-        alert("Debes elegir al menos una region");
-        return false;
-    }
 
-    let comuna = document.getElementById("comuna").value;
-    if(!comuna){
-        alert("Debes elegir al menos una comuna");
-        return false;
-    }
 
-    let nombre = document.getElementById("nombre").value;
-    if(nombre.length < 3 || nombre.length > 200){
-        alert("El nombre debe tener entre 3 y 20 caracteres");
-        return false;
-    }
 
-    let email = document.getElementById("email").value;
-    if(!email){
-        alert("Debe colocar un email");
-        return false;
-    }
-    if(email && !email.includes("@")){
-        alert("Email inválido");
-        return false;
-    }
-
-    let telefono = document.getElementById("telefono").value;
-    if(telefono && !/^\+\d{3}\.\d{8,9}$/.test(telefono)){
-        alert("Teléfono inválido. Ejemplo: +569.12345678");
-        return false;
-    }
-
-    let tipo = document.getElementById("tipo").value;
-    if(!tipo){
-        alert("Debes elegir al menos una tipo");
-        return false;
-    }
-
-    let cantidad = document.getElementById("cantidad").value;
-    if(cantidad < 1){
-        alert("Cantidad debe ser al menos 1");
-        return false;
-    }
-
-    let edad = document.getElementById("edad").value;
-    if(edad < 1){
-        alert("Edad debe ser al menos 1");
-        return false;
-    }
-
-    let fecha = document.getElementById("fechaEntrega").value;
-    let fechaSeleccionada = new Date(fecha);
-    let fehcaMinima= new Date();
-    if(!fecha){
-        alert("Debe seleccionar fecha de entrega");
-        return false;
-    
-    }
-
-    if(fechaSeleccionada < fehcaMinima){
-        alert("La fecha debe ser en el presente");
-        return false;
-    
-    }
-
-    
-
-    let contacto = document.getElementById("contactarPor").value;
-    let contactoId = document.getElementById("contactoId").value;
-
-    if (contacto && contactoId){
-        if (contactoId.length < 4 || contactoId.length > 50){
-            alert("El ID o URL de contacto debe tener entre 4 y 50 caracteres");
-            return false;
-        }
-    }
-
-    if(confirm("Esta seguro que desea agregar este aviso de adopcion?")){
-        alert("Hemos recibido la información de adopción, muchas gracias!")
-        document.location = "index.html";
-    }
-
-    return true;
-    
-}
 
 let contactos = 1;
 function agregarOtroContacto(){
@@ -164,8 +79,11 @@ function agregarOtroContacto(){
     }
 }
 
-document.getElementById("btnCerrar").style.display = "none";
-document.getElementById("imgGrande").style.display = "none";
+const btnCerrar = document.getElementById("btnCerrar");
+if (btnCerrar) btnCerrar.style.display = "none";
+
+const imgGrande = document.getElementById("imgGrande");
+if (imgGrande) imgGrande.style.display = "none";
 function ampliarFoto(img){
     let modal = document.getElementById("modalFoto");
     let modalImg = document.getElementById("imgGrande");
@@ -183,3 +101,201 @@ function cerrarFoto(){
    btnCerrar.style.display = "none";
   
 }
+
+const validateRegion = (region) => region && region.trim() !== "";
+const validateComuna = (comuna) => comuna && comuna.trim() !== "";
+
+const validateName = (name) => {
+  if(!name) return false;
+  let lengthValid =  name.trim().length >= 3 && name.trim().length <= 200;
+  
+  return lengthValid;
+}
+
+
+
+const validateEmail = (email) => {
+  if (!email) return false;
+  let lengthValid = email.length > 15;
+
+  // validamos el formato
+  let re = /^[\w.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+  let formatValid = re.test(email);
+
+  // devolvemos la lógica AND de las validaciones.
+  return lengthValid && formatValid;
+};
+
+
+const validatePhoneNumber = (phoneNumber) => {
+  if (!phoneNumber) return false;
+  // validación de longitud
+  let lengthValid = phoneNumber.length >= 8;
+
+  // validación de formato
+  let re = /^\+\d{3}\.\d{8,9}$/;
+  let formatValid = re.test(phoneNumber);
+
+  // devolvemos la lógica AND de las validaciones.
+  return lengthValid && formatValid;
+};
+
+
+const validateTipo = (tipo) => tipo && tipo.trim() != "";
+
+const validateCantidad = (cantidad) => cantidad && cantidad >= 1;
+
+const validateEdad = (edad) => edad && edad >= 1;
+
+const validateFechaEntrega = (fecha) => {
+    if(!fecha) return false;
+
+    let fechaSeleccionada = new Date(fecha);
+    let fehcaMinima= new Date();
+    return fechaSeleccionada >= fehcaMinima
+};
+
+const validateContactoId = (contacto, contactoId) => {
+    if (!contacto) return true;
+    if (!contactoId) return false;
+    return contactoId.length >= 4 && contactoId.length <= 50;
+};
+
+
+const validateFiles = (files) => {
+  if (!files) return false;
+
+  // validación del número de archivos
+  let lengthValid = 1 <= files.length && files.length <= 5;
+
+  // validación del tipo de archivo
+  let typeValid = true;
+
+  for (const file of files) {
+    // el tipo de archivo debe ser "image/<foo>" o "application/pdf"
+    let fileFamily = file.type.split("/")[0];
+    typeValid &&= fileFamily == "image" || file.type == "application/pdf";
+  }
+
+  // devolvemos la lógica AND de las validaciones.
+  return lengthValid && typeValid;
+};
+
+
+
+
+
+const validateForm = () => {
+  // obtener elementos del DOM usando el nombre del formulario.
+  let myForm = document.forms["myForm"];
+  let region= myForm["region"].value;
+  let comuna= myForm["comuna"].value;
+  let name= myForm["nombre"].value;
+  let email= myForm["email"].value;
+  let phone= myForm["telefono"].value;
+  let tipo= myForm["tipo"].value;
+  let cantidad= myForm["cantidad"].value;
+  let edad= myForm["edad"].value;
+  let fecha= myForm["fechaEntrega"].value;
+  let contacto= myForm["contactarPor"].value;
+  let contactoId= myForm["contactoId"].value;
+  let Foto= myForm["foto1"].value;
+  
+
+  // variables auxiliares de validación y función.
+  let invalidInputs = [];
+  let isValid = true;
+  const setInvalidInput = (inputName, reason) => {
+    invalidInputs.push(`${inputName}: ${reason}`);
+    isValid &&= false;
+  };
+
+  // lógica de validación
+  if (!validateRegion(region)) setInvalidInput("Region", "Debes elegir al menos una region");
+  if (!validateComuna(comuna)) setInvalidInput("Comuna","Debes elegir al menos una comuna");
+  if (!validateName(name)) setInvalidInput("Nombre","El nombre debe tener entre 3 y 20 caracteres");
+  if (!validateEmail(email)) setInvalidInput("Email","Debe colocar un email valido");
+  if (phone && !validatePhoneNumber(phone)) setInvalidInput("Telefono", "Teléfono inválido. Ejemplo: +569.12345678");
+  if (!validateTipo(tipo)) setInvalidInput("Tipo","Debes elegir al menos un tipo");
+  if (!validateCantidad(cantidad)) setInvalidInput("Cantidad", "Cantidad debe ser al menos 1");
+  if (!validateEdad(edad)) setInvalidInput("Edad","Edad debe ser al menos 1");
+  if (!validateFechaEntrega(fecha)) setInvalidInput("Fecha de Entrega", "Debe ser igual o posterior a hoy");
+  if (!validateContactoId(contacto, contactoId)) setInvalidInput("El ID o URL", "El contacto debe tener entre 4 y 50 caracteres");
+  if (!validateRegion(Foto)) setInvalidInput("Foto", "Debes agregar un minimo de 1 foto");
+
+  
+
+  // finalmente mostrar la validación
+  let validationBox = document.getElementById("val-box");
+  let validationMessageElem = document.getElementById("val-msg");
+  let validationListElem = document.getElementById("val-list");
+  let formContainer = document.querySelector(".main-container");
+
+  if (!isValid) {
+    validationListElem.textContent = "";
+    // agregar elementos inválidos al elemento val-list.
+    for (input of invalidInputs) {
+      let listElement = document.createElement("li");
+      listElement.innerText = input;
+      validationListElem.append(listElement);
+    }
+    // establecer val-msg
+    validationMessageElem.innerText = "Los siguientes campos son inválidos:";
+
+    // aplicar estilos de error
+    validationBox.style.backgroundColor = "#ffdddd";
+    validationBox.style.borderLeftColor = "#f44336";
+
+    // hacer visible el mensaje de validación
+    validationBox.hidden = false;
+  } else {
+    // Ocultar el formulario
+    myForm.style.display = "none";
+    
+
+    // establecer mensaje de éxito
+    validationMessageElem.innerText = "“¿Está seguro que desea agregar este aviso de adopción?";
+    validationListElem.textContent = "";
+
+    // aplicar estilos de éxito
+    validationBox.style.backgroundColor = "#ddffdd";
+    validationBox.style.borderLeftColor = "#4CAF50";
+
+    
+
+    // Agregar botones para enviar el formulario o volver
+    let yesBtn = document.createElement("button");
+    yesBtn.innerText = "“Sí, estoy seguro";
+    yesBtn.style.marginRight = "10px";
+    yesBtn.addEventListener("click", () => {
+      validationMessageElem.innerText = "Hemos recibido la información de adopción, muchas gracias y suerte!"
+      validationListElem.innerHTML = "";
+      let backHome = document.createElement("button");
+      backHome.innerText = "Volver a la portada"
+      backHome.addEventListener("click", () => {
+        window.location.href = "index.html";
+      });
+      validationListElem.appendChild(backHome);
+      
+    });
+
+    let noBtn = document.createElement("button");
+    noBtn.innerText = "No, no estoy seguro, quiero volver al formulario";
+    noBtn.addEventListener("click", () => {
+      // Mostrar el formulario nuevamente
+      myForm.style.display = "block";
+      validationBox.hidden = true;
+    });
+
+    
+    validationListElem.appendChild(yesBtn);
+    validationListElem.appendChild(noBtn);
+    
+
+    // hacer visible el mensaje de validación
+    validationBox.hidden = false;
+  }
+};
+
+let submitBtn = document.getElementById("submit-btn");
+submitBtn.addEventListener("click", validateForm);
